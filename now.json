@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "name": "netlify-deploy",
+  "alias": "netlify-deploy",
+  "builds": [
+    {
+      "src": "index.js",
+      "use": "@now/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "index.js"
+    }
+  ]
+}
