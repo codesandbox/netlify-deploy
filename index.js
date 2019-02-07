@@ -4,11 +4,16 @@ const { send, json, buffer } = require('micro')
 const { router, get, post } = require('microrouter')
 const axios = require('axios')
 const microCors = require('micro-cors')
+const jwt = require('jsonwebtoken')
 
 const cors = microCors()
 
 const url = `https://api.netlify.com/api/v1/sites/`
-const token = process.env.NETLIFY_TOKEN
+const {
+  NETLIFY_OAUTH_CLIENT_ID,
+  NETLIFY_OAUTH_CLIENT_SECRET,
+  NETLIFY_TOKEN
+} = process.env
 
 const getSite = async (req, res) => {
   try {
@@ -16,7 +21,7 @@ const getSite = async (req, res) => {
       `${url}/csb-${req.params.id}.netlify.com`,
       {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${NETLIFY_TOKEN}`
         }
       }
     )
@@ -39,7 +44,7 @@ const createSite = async (req, res) => {
   try {
     const { data } = await axios.post(`${url}`, body, {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${NETLIFY_TOKEN}`
       }
     })
 
@@ -59,7 +64,7 @@ const createDeploy = async (req, res) => {
       body,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${NETLIFY_TOKEN}`,
           'Content-Type': 'application/zip'
         }
       }
@@ -79,10 +84,27 @@ const createDeploy = async (req, res) => {
   }
 }
 
+const claimSite = async (req, res) => {
+  const { sessionId } = req.query
+  const token = jwt.sign(
+    {
+      client_id: process.env.NETLIFY_OAUTH_CLIENT_ID,
+      session_id: sessionId
+    },
+    process.env.NETLIFY_OAUTH_CLIENT_SECRET
+  )
+
+  send(res, 200, {
+    sessionId,
+    claim: `https://app.netlify.com/claim#${token}`
+  })
+}
+
 module.exports = cors(
   router(
     post('/site/:id/deploys', createDeploy),
     get('/site/:id', getSite),
+    get('/site-claim', claimSite),
     post('/site', createSite)
   )
 )
