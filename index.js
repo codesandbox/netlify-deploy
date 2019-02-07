@@ -30,28 +30,23 @@ const getSite = async (req, res) => {
       sandboxId: req.params.id
     })
   } catch (e) {
-    const statusCode = 404
-    const data = { error: 'Not Found' }
-
-    send(res, statusCode, data)
+    send(res, 404, { error: 'Not Found' })
   }
 }
 
 const createSite = async (req, res) => {
   const body = await json(req)
   try {
-    const site = await axios.post(`${url}`, body, {
+    const { data } = await axios.post(`${url}`, body, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
 
-    send(res, 200, {
-      created: true
-    })
+    send(res, 200, data)
   } catch (e) {
     console.log('error', e)
-    send(res, 500, 'error')
+    send(res, 500, 'There was an error creating your site')
   }
 }
 
@@ -80,7 +75,7 @@ const createDeploy = async (req, res) => {
     })
   } catch (e) {
     console.log('error', e)
-    send(res, 500, 'error')
+    send(res, 500, 'There was an error creating your deploy')
   }
 }
 
