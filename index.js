@@ -28,6 +28,7 @@ const getSite = async (req, res) => {
 
     send(res, 200, {
       id: data.id,
+      site_id: data.site_id,
       screenshot_url: data.screenshot_url,
       name: data.name,
       url: data.url,
@@ -58,25 +59,33 @@ const createSite = async (req, res) => {
 const createDeploy = async (req, res) => {
   try {
     const body = await buffer(req)
+    const siteId = req.query.siteId
     const id = `csb-${req.params.id}`
-    const { data } = await axios.post(
-      `${url}/${id}.netlify.com/deploys`,
-      body,
+    const deployURL = await axios.post(
+      `https://api-dev.netlify-services.com/builder/get-upload-url`,
+      { siteId },
       {
         headers: {
-          Authorization: `Bearer ${NETLIFY_TOKEN}`,
-          'Content-Type': 'application/zip'
+          Authorization: `bearer ${NETLIFY_TOKEN}`
+        }
+      }
+    )
+    const url = deployURL.data.uploadURL
+
+    const upload = await axios.put(deployURL.data.uploadURL, body)
+
+    const { data: status } = await axios.post(
+      `https://api-dev.netlify-services.com/builder/build-status`,
+      { siteId },
+      {
+        headers: {
+          Authorization: `bearer ${NETLIFY_TOKEN}`
         }
       }
     )
 
     send(res, 200, {
-      id: data.id,
-      screenshot_url: data.screenshot_url,
-      name: data.name,
-      url: data.url,
-      state: data.state,
-      deploy_url: data.deploy_url
+      status: status.status
     })
   } catch (e) {
     console.log('error', e)
