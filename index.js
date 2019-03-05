@@ -60,10 +60,12 @@ const createDeploy = async (req, res) => {
   try {
     const body = await buffer(req)
     const siteId = req.query.siteId
+    const buildDir = req.query.dist || 'build'
+    const buildCommand = req.query.buildCommand
     const id = `csb-${req.params.id}`
     const deployURL = await axios.post(
       `https://api-dev.netlify-services.com/builder/get-upload-url`,
-      { siteId },
+      { siteId, buildDir, buildCommand: `npm run ${buildCommand}` },
       {
         headers: {
           Authorization: `bearer ${NETLIFY_TOKEN}`
@@ -71,7 +73,6 @@ const createDeploy = async (req, res) => {
       }
     )
     const url = deployURL.data.uploadURL
-
     const upload = await axios.put(deployURL.data.uploadURL, body)
 
     const { data: status } = await axios.post(
@@ -86,6 +87,43 @@ const createDeploy = async (req, res) => {
 
     send(res, 200, {
       status: status.status
+    })
+  } catch (e) {
+    console.log('error', e)
+    send(res, 500, 'There was an error creating your deploy')
+  }
+}
+
+const getStatus = async (req, res) => {
+  const siteId = req.params.id
+  try {
+    const { data: status } = await axios.post(
+      `https://api-dev.netlify-services.com/builder/build-status`,
+      { siteId },
+      {
+        headers: {
+          Authorization: `bearer ${NETLIFY_TOKEN}`
+        }
+      }
+    )
+
+    if (status.logUrl) {
+      try {
+        const data = await axios.get(status.logUrl, {
+          headers: {
+            Authorization: `bearer ${NETLIFY_TOKEN}`
+          }
+        })
+        return send(res, 200, {
+          data
+        })
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
+    send(res, 200, {
+      status
     })
   } catch (e) {
     console.log('error', e)
@@ -112,6 +150,7 @@ const claimSite = async (req, res) => {
 module.exports = cors(
   router(
     post('/site/:id/deploys', createDeploy),
+    get('/site/:id/status', getStatus),
     get('/site/:id', getSite),
     get('/site-claim', claimSite),
     post('/site', createSite)
