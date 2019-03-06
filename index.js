@@ -86,7 +86,7 @@ const createDeploy = async (req, res) => {
     )
 
     send(res, 200, {
-      status: status.status
+      status: status
     })
   } catch (e) {
     console.log('error', e)
