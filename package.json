@@ -8,7 +8,9 @@
     "dev": "micro-dev -p 8080",
     "format": "prettier --write '**/*.{js,css,md}'",
     "posttest": "npm run format",
-    "inspect": "node --inspect node_modules/.bin/micro-dev -p 8080"
+    "inspect": "node --inspect node_modules/.bin/micro-dev -p 8080",
+    "lint": "eslint . --cache --fix",
+    "pretest": "npm run lint"
   },
   "keywords": [],
   "author": "",
@@ -20,9 +22,16 @@
     "micro": "^9.3.3",
     "micro-cors": "^1.0.0-alpha.1",
     "micro-dev": "^3.0.0",
-    "microrouter": "^3.1.3"
+    "microrouter": "^3.1.3",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
+    "eslint": "^5.15.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "prettier": "^1.16.4"
   }
 }
