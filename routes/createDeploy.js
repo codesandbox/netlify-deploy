@@ -18,9 +18,9 @@ const createDeploy = async (req, res) => {
         }
       }
     )
-    logger('info', 'Got Deploy URL', deployURL.data)
+    logger.log('info', 'Got Deploy URL', deployURL.data)
     const upload = await axios.put(deployURL.data.uploadURL, body)
-    logger('info', 'Pushed files to netlify', upload)
+    logger.log('info', 'Pushed files to netlify', upload)
 
     const { data: status } = await axios.post(
       `https://api-dev.netlify-services.com/builder/build-status`,
@@ -31,12 +31,12 @@ const createDeploy = async (req, res) => {
         }
       }
     )
-    logger('info', 'Status Received', status)
+    logger.log('info', 'Status Received', status)
     send(res, 200, {
       status: status
     })
   } catch (e) {
-    logger('error', 'There was an error making your deploy', e)
+    logger.log('error', 'There was an error making your deploy', e)
     send(res, 500, 'There was an error creating your deploy')
   }
 }

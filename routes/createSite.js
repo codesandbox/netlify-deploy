@@ -12,10 +12,10 @@ const createSite = async (req, res) => {
         Authorization: `Bearer ${NETLIFY_TOKEN}`
       }
     })
-    logger('info', 'Website created', data)
+    logger.log('info', 'Website created', data)
     send(res, 200, data)
   } catch (e) {
-    logger('error', 'Could create website', e)
+    logger.log('error', 'Could create website', e)
     send(res, 500, 'There was an error creating your site')
   }
 }

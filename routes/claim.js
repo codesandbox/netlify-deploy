@@ -12,7 +12,7 @@ const claimSite = async (req, res) => {
     },
     NETLIFY_OAUTH_CLIENT_SECRET
   )
-  logger('info', 'Got User Token')
+  logger.log('info', 'Got User Token')
   send(res, 200, {
     sessionId,
     claim: `https://app.netlify.com/claim#${token}`

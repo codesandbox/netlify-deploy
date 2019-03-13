@@ -15,7 +15,7 @@ const getSite = async (req, res) => {
       }
     )
 
-    logger('info', 'Got Website', data)
+    logger.log('info', 'Got Website', data)
     send(res, 200, {
       id: data.id,
       site_id: data.site_id,
@@ -26,7 +26,7 @@ const getSite = async (req, res) => {
       sandboxId: req.params.id
     })
   } catch (e) {
-    logger('error', 'Could not find website', e)
+    logger.log('error', 'Could not find website', e)
     send(res, 404, { error: 'Not Found' })
   }
 }
