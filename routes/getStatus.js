@@ -7,7 +7,7 @@ const getStatus = async (req, res) => {
   const siteId = req.params.id
   try {
     const { data: status } = await axios.post(
-      `https://api-dev.netlify-services.com/builder/build-status`,
+      `https://r0ovnvtqqi.execute-api.eu-west-1.amazonaws.com/dev/build-status`,
       { siteId },
       {
         headers: {

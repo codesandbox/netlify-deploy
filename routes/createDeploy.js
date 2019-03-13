@@ -10,7 +10,7 @@ const createDeploy = async (req, res) => {
     const buildDir = req.query.dist || 'build'
     const buildCommand = req.query.buildCommand
     const deployURL = await axios.post(
-      `https://api-dev.netlify-services.com/builder/get-upload-url`,
+      `https://r0ovnvtqqi.execute-api.eu-west-1.amazonaws.com/dev/get-upload-url`,
       { siteId, buildDir, buildCommand: `npm run ${buildCommand}` },
       {
         headers: {
@@ -23,7 +23,7 @@ const createDeploy = async (req, res) => {
     logger.log('info', 'Pushed files to netlify', upload)
 
     const { data: status } = await axios.post(
-      `https://api-dev.netlify-services.com/builder/build-status`,
+      `https://r0ovnvtqqi.execute-api.eu-west-1.amazonaws.com/dev/build-status`,
       { siteId },
       {
         headers: {
