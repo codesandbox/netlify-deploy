@@ -19,8 +19,8 @@ const createDeploy = async (req, res) => {
       }
     )
     logger.log('info', 'Got Deploy URL', deployURL.data)
-    const upload = await axios.put(deployURL.data.uploadURL, body)
-    logger.log('info', 'Pushed files to netlify', upload)
+    await axios.put(deployURL.data.uploadURL, body)
+    logger.log('info', 'Pushed files to netlify')
 
     const { data: status } = await axios.post(
       `https://r0ovnvtqqi.execute-api.eu-west-1.amazonaws.com/dev/build-status`,
