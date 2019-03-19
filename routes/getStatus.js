@@ -19,7 +19,7 @@ const getStatus = async (req, res) => {
       status
     })
   } catch (e) {
-    logger.log('error', 'Could not get Status', e)
+    logger.log('error', 'Could not get Status', e.message)
     send(res, 500, 'There was an error creating your deploy')
   }
 }
