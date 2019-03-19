@@ -15,7 +15,6 @@ const getStatus = async (req, res) => {
         }
       }
     )
-    logger.log('info', 'Status Received', status)
     send(res, 200, {
       status
     })
