@@ -1,1 +1,1 @@
-module.exports = `https://api.netlify.com/api/v1/sites/`
+module.exports = `https://api.netlify.com/api/v1/sites`;

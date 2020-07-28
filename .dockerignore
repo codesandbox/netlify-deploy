@@ -1,4 +1,9 @@
-.*
-Dockerfile
-now.json
-Readme.md
+docker-compose.yaml
+*.log
+.build_cache
+.git
+.vscode
+dist/*
+node_modules
+ssh/*
+build
