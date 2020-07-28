@@ -1,0 +1,27 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: build and publish image
+    image: plugins/docker
+    settings:
+      repo: gcr.io/codesandbox-153802/netlify-deploy
+      registry: gcr.io
+      tags:
+        - ${DRONE_COMMIT_SHA:0:7}
+      registry: gcr.io
+      username: _json_key
+      password:
+        from_secret: gcr_sa_json
+
+trigger:
+  branch:
+    - master
+    - dev
+---
+kind: signature
+hmac: 5a6a7c0058994bb2eda29368a8ad35a184e358bd389be2bc5b3fba84993696c8
+
+...

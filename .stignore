@@ -1,0 +1,5 @@
+.git
+config
+node_modules
+secrets
+heapdump*

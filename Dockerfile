@@ -1,22 +1,19 @@
-FROM node:10.15.3-jessie-slim
+FROM node:12.18.0-buster
 
 ARG TINI_VERSION=v0.18.0
 
-ADD . /deploy
+WORKDIR /app
 
-RUN chown -R 1000:1000 /deploy && \
+ADD . .
+
+RUN apt-get update && \
+  apt-get install -y curl git && \
+  rm -fr /var/lib/apt/lists/* && \
   curl -Lo /sbin/tini https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini && \
-  chmod +x /sbin/tini
+  chmod +x /sbin/tini && \
+  yarn install --prod && \
+  rm -fr /tmp/* /usr/local/share/.cache
 
-USER 1000:1000
-
-WORKDIR /deploy
-
-RUN yarn install --prod && \
-  rm -fr /home/node/.cache /tmp/*
-
-EXPOSE 8080
+EXPOSE 3000
 
 ENTRYPOINT ["/sbin/tini", "--"]
-
-CMD ["yarn", "start", "-l", "tcp://0.0.0.0:8080"]

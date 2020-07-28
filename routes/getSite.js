@@ -1,8 +1,8 @@
-const { send } = require('micro')
-const logger = require('../utils/logger')
-const url = require('../utils/url')
-const axios = require('axios')
-const { NETLIFY_TOKEN } = process.env
+const { send } = require('micro');
+const logger = require('../utils/logger');
+const url = require('../utils/url');
+const axios = require('axios');
+const secrets = require('../secrets');
 
 const getSite = async (req, res) => {
   try {
@@ -10,12 +10,12 @@ const getSite = async (req, res) => {
       `${url}/csb-${req.params.id}.netlify.com`,
       {
         headers: {
-          Authorization: `Bearer ${NETLIFY_TOKEN}`
-        }
+          Authorization: `Bearer ${secrets.netlifyToken}`,
+        },
       }
-    )
+    );
 
-    logger.log('info', 'Got Website', data)
+    logger.log('info', 'Got Website', { site: req.params.id });
     send(res, 200, {
       id: data.id,
       site_id: data.site_id,
@@ -23,12 +23,15 @@ const getSite = async (req, res) => {
       name: data.name,
       url: data.url,
       state: data.state,
-      sandboxId: req.params.id
-    })
+      sandboxId: req.params.id,
+    });
   } catch (e) {
-    logger.log('error', 'Could not find website', e)
-    send(res, 404, { error: 'Not Found' })
+    logger.log('error', 'Could not find website', {
+      site: req.params.id,
+      error: e.message,
+    });
+    send(res, 404, { error: 'Not Found' });
   }
-}
+};
 
-module.exports = getSite
+module.exports = getSite;

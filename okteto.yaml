@@ -1,0 +1,4 @@
+name: netlify-deploy
+namespace: netlify-deploy-staging
+mountpath: /app
+command: /bin/bash
