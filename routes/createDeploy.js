@@ -5,7 +5,7 @@ const secrets = require('../secrets');
 
 const createDeploy = async (req, res) => {
   try {
-    const body = await buffer(req);
+    const body = await buffer(req, { limit: '6mb' });
     const siteId = req.query.siteId;
     const buildDir = req.query.dist || 'build';
     const buildCommand = req.query.buildCommand;
